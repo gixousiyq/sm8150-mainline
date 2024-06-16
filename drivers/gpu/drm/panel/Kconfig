@@ -168,6 +168,7 @@ config DRM_PANEL_HIMAX_HX8394
 	  If M is selected the module will be called panel-himax-hx8394.
 
 config DRM_PANEL_HUAXING_NT36672C
+	tristate "Huaxing NT36672C DSC FHD LCD panel"
 	depends on OF
         depends on DRM_MIPI_DSI
         depends on BACKLIGHT_CLASS_DEVICE
@@ -869,7 +870,8 @@ config DRM_PANEL_SYNAPTICS_R63353
 	  Synaptics R63353 controller.
 
 config DRM_PANEL_TIANMA_NT36672C
-        depends on OF
+        tristate "Tianma NT36672C DSC FHD LCD panel"
+	depends on OF
         depends on DRM_MIPI_DSI
         depends on BACKLIGHT_CLASS_DEVICE
         help
