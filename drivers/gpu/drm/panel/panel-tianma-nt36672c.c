@@ -391,7 +391,7 @@ static void j20s_36_02_0a_dsc_remove(struct mipi_dsi_device *dsi)
 }
 
 static const struct of_device_id j20s_36_02_0a_dsc_of_match[] = {
-	{ .compatible = "tianma,nt36672c-dsc" }, // FIXME
+	{ .compatible = "tianma,nt36672c" }, // FIXME
 	{ /* sentinel */ }
 };
 MODULE_DEVICE_TABLE(of, j20s_36_02_0a_dsc_of_match);
