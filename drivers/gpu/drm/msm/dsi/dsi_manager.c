@@ -338,9 +338,6 @@ static void dsi_mgr_bridge_post_disable(struct drm_bridge *bridge)
 
 	DBG("id=%d", id);
 
-	if (!msm_dsi_device_connected(msm_dsi))
-		return;
-
 	notifier_data = MI_DRM_BLANK_POWERDOWN;
 	mi_drm_notifier_call_chain(MI_DRM_EARLY_EVENT_BLANK, &notifier_data);
 
