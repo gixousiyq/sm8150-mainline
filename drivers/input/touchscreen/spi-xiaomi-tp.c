@@ -13,6 +13,14 @@ static ssize_t ts_xsfer_state_show(struct device *dev, struct device_attribute *
 	return ret;
 }
 
+void strlcpy(char *dest, const char *src, size_t size) {
+    size_t n = size - 1;  // Leave space for null terminator
+    if (n > 0) {
+        strncpy(dest, src, n);
+        dest[n] = '\0';  // Always null-terminate
+    }
+}
+
 static DEVICE_ATTR(ts_xsfer_state, S_IRUGO, ts_xsfer_state_show, NULL);
 
 /*tmporary get spi device's ownership until invoke tmp_drop_ts_xsfer()

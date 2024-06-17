@@ -2332,11 +2332,11 @@ static int32_t nvt_ts_probe(struct platform_device *pdev)
 	spi_set_drvdata(ts->client, ts);
 
 	/* ---prepare for spi parameter--- */
-	if (ts->client->master->flags & SPI_MASTER_HALF_DUPLEX) {
-		NVT_ERR("Full duplex not supported by master\n");
-		ret = -EIO;
-		goto err_ckeck_full_duplex;
-	}
+	//if (ts->client->master->flags & SPI_MASTER_HALF_DUPLEX) {
+	//	NVT_ERR("Full duplex not supported by master\n");
+	//	ret = -EIO;
+	//	goto err_ckeck_full_duplex;
+	//}
 	ts->client->bits_per_word = 8;
 	ts->client->mode = SPI_MODE_0;
 	ts->client->max_speed_hz = ts->spi_max_freq;

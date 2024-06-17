@@ -121,6 +121,7 @@ msm-y += \
 	msm_ringbuffer.o \
 	msm_submitqueue.o \
 	msm_gpu_tracepoints.o \
+	msm_drm_notify.o 	
 
 msm-$(CONFIG_DRM_FBDEV_EMULATION) += msm_fbdev.o
 
