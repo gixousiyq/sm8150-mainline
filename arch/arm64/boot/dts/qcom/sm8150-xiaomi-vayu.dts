@@ -147,6 +147,15 @@
 		voltage-min-design-microvolt = <3390000>; 
 		voltage-max-design-microvolt = <4475000>; 
 	};
+	
+	disp_vci_vreg: disp_vci_vreg {
+		compatible = "regulator-fixed";
+		regulator-name = "disp_vci_vreg";
+		start-delay-us = <4000>;
+		enable-active-high;
+		regulator-boot-on;
+		gpio = <&tlmm 21 0>;
+	};
 
 	vph_pwr: vph-pwr-regulator {
 		compatible = "regulator-fixed";
@@ -456,41 +465,43 @@
 };
 
 &mdss_dsi0 {
-	vdda-supply = <&vreg_l3c_1p2>;
 	status = "okay";
+	vdda-supply = <&vreg_l3c_1p2>;
 
-	display_panel: panel@0 {
-		compatible = "huaxing,nt36672c-dsc", "novatek,nt36xxx-spi"; // FIX ME : Huaxing panel driver
+	panel@0 {
+		/* The compatible is assigned in device DTs. */
+		compatible = "huaxing,nt36672c";
 		reg = <0>;
-		vddio-supply = <&vreg_l14a_1p8>;
+
+		status = "okay";
+
 		reset-gpios = <&tlmm 6 GPIO_ACTIVE_LOW>;
-		// backlight = <&backlight>;
-		rotation = <90>;
 
-		ports {
-			#address-cells = <1>;
-			#size-cells = <0>;
+		vddio-supply = <&vreg_l14a_1p8>;
+		vcie-supply = <&disp_vci_vreg>;
+		vci-supply = <&vreg_l13a_2p7>;
 
-			port@0 {
-				reg = <0>;
+		panel-te-gpios = <&tlmm 8 GPIO_ACTIVE_LOW>;
+		pinctl-names = "panel_active", "panel_suspend";
+		pinctrl-0 = <&sde_dsi_active &sde_te_active>;
+		pinctrl-1 = <&sde_dsi_suspend &sde_te_suspend>;
 
-				panel_in_0: endpoint {
-					remote-endpoint = <&mdss_dsi0_out>;
-				};
+		port {
+			panel_in: endpoint {
+				remote-endpoint = <&mdss_dsi0_out>;
 			};
 		};
 	};
 };
 
 &mdss_dsi0_out {
-	data-lanes = <0 1 2>;
-	remote-endpoint = <&panel_in_0>;
+	data-lanes = <0 1 2 3>;
+	remote-endpoint = <&panel_in>;
 };
 
 &mdss_dsi0_phy {
-	vdds-supply = <&vreg_l5a_0p8>;
-//	phy-type = <PHY_TYPE_CPHY>;
 	status = "okay";
+	vdds-supply = <&vreg_l5a_0p8>;
 };
 
 &pm8150_gpios {
@@ -707,7 +718,34 @@
 		};
 	};
 
+	sde_dsi_active: sde_dsi_active {
+		pins = "gpio6", "gpio7";
+		function = "gpio";
+		drive-strength = <8>;
+		bias-disable;
+	};
 
+	sde_dsi_suspend: sde_dsi_suspend {
+		pins = "gpio6", "gpio7";
+		function = "gpio";
+		drive-strength = <2>;
+		bias-pull-down;
+	};
+
+	sde_te_active: sde_te_active {
+		pins = "gpio8";
+		function = "mdp_vsync";
+		drive-strength = <2>;
+		bias-pull-down;
+	};
+
+	sde_te_suspend: sde_te_suspend {
+		pins = "gpio8";
+		function = "mdp_vsync";
+		drive-strength = <2>;
+		bias-pull-down;
+	};
+	
 	qup_uart13_sleep: qup-uart13-sleep {
 		pinmux {
 			pins = "gpio43", "gpio44",
