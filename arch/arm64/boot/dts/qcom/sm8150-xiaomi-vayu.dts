@@ -943,7 +943,8 @@
 	snps,has-lpm-erratum;
 	snps,hird-threshold = /bits/ 8 <0x10>;
 	maximum-speed = "high-speed";
-	dr_mode = "peripheral";
+	dr_mode = "otg";
+	usb-role-switch;
 };
 
 &usb_1_hsphy {
@@ -959,6 +960,9 @@
 	vdda-pll-supply = <&vreg_l5a_0p8>;
 };
 
+&usb_1_dwc3_hs {
+	remote-endpoint = <&pm8150b_role_switch_in>;
+};
 
 &wifi {
 	status = "okay";
