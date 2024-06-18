@@ -163,6 +163,11 @@ static void ts_spi_remove(struct spi_device *client)
 	sysfs_remove_file(&client->dev.kobj, &dev_attr_ts_xsfer_state.attr);
 }
 
+static const struct spi_device_id spi_xiaomi_tp_ids[] = {
+	{ "NVT-ts-spi" },
+	{},
+};
+
 static struct of_device_id ts_match_tbl[] = {
 	{ .compatible = "xiaomi,spi-for-tp", },
 	{},
@@ -171,6 +176,7 @@ static struct of_device_id ts_match_tbl[] = {
 static struct spi_driver touch_spi_drv = {
 	.probe = ts_spi_probe,
 	.remove = ts_spi_remove,
+	.id_table = spi_xiaomi_tp_ids,
 	.driver = {
 		.name = "touch_xsfer",
 		.owner = THIS_MODULE,
