@@ -237,7 +237,7 @@
 		};
 
 		vdd_pdphy:
-		vdda_usb_hs_3p1/:
+		vdda_usb_hs_3p1:
 		vreg_l2a_3p1: ldo2 {
 			regulator-min-microvolt = <3072000>;
 			regulator-max-microvolt = <3072000>;

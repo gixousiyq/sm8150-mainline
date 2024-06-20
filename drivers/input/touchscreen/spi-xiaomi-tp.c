@@ -1,20 +1,11 @@
 #include "spi-xiaomi-tp.h"
 
 #ifndef HAVE_STRLCPY
-size_t                  /* O - Length of string */
-strlcpy(char *dst,        /* O - Destination string */
-	const char *src,      /* I - Source string */
-	size_t size)     /* I - Size of destination string buffer */
+size_t strlcpy(char *dst, const char *src, size_t size)
 {
-  size_t srclen;         /* Length of source string */
- /*
-  * Figure out how much room is needed...
-  */
+  size_t srclen;
   size --;
   srclen = strlen(src);
- /*
-  * Copy the appropriate amount...
-  */
   if (srclen > size)
     srclen = size;
   memcpy(dst, src, srclen);
@@ -178,14 +169,24 @@ static void ts_spi_remove(struct spi_device *client)
 	sysfs_remove_file(&client->dev.kobj, &dev_attr_ts_xsfer_state.attr);
 }
 
+static const struct spi_device_id touch_spi_drv_ids[] = {
+        { "spi-for-tp" },
+        { },
+};
+
+MODULE_DEVICE_TABLE(spi, touch_spi_drv_ids);
+
 static struct of_device_id ts_match_tbl[] = {
 	{ .compatible = "xiaomi,spi-for-tp", },
 	{},
 };
 
+MODULE_DEVICE_TABLE(of, ts_match_tbl);
+
 static struct spi_driver touch_spi_drv = {
 	.probe = ts_spi_probe,
 	.remove = ts_spi_remove,
+	.id_table = touch_spi_drv_ids,
 	.driver = {
 		.name = "touch_xsfer",
 		.owner = THIS_MODULE,
