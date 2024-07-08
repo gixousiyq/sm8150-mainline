@@ -30,9 +30,6 @@
 /delete-node/ &cdsp_mem;
 
 / {
-	model = "Xiaomi POCO X3 Pro";
-	compatible = "xiaomi,vayu", "qcom,sm8150";
-
 	aliases {
 		serial0 = &uart2;
 		hsuart0 = &uart13;
@@ -466,9 +463,8 @@
 	status = "okay";
 	vdda-supply = <&vreg_l3c_1p2>;
 
-	panel@0 {
+	panel: panel@0 {
 		/* The compatible is assigned in device DTs. */
-		compatible = "huaxing,nt36672c";
 		reg = <0>;
 
 		status = "okay";
