@@ -30,6 +30,7 @@
 /delete-node/ &cdsp_mem;
 
 / {
+	qcom,board-id = <0x2f 0x00>;
 
 	aliases {
 		serial0 = &uart2;
