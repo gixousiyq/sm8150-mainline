@@ -2298,6 +2298,10 @@ static int32_t nvt_ts_probe(struct platform_device *pdev)
 
 	ts->pdev = pdev;
 
+	// This to prevent the driver from messing
+	// With panel initilization
+	usleep_range(2500,3000);
+
 	for (retry = 1; retry <= 3; ++retry) {
 		ret = tmp_hold_ts_xsfer(&ts_xsfer);
 		if (ret < 0) {
@@ -2310,7 +2314,21 @@ static int32_t nvt_ts_probe(struct platform_device *pdev)
 				goto err_get_spi;
 			} else if (ret == -EINVAL) {
 				NVT_ERR("ts_xsfer not exist, exit nvt probe\n");
-				goto err_get_spi;
+				/*
+				 * This error usually happens when
+				 * this driver probes before spi-xiaomi-tp,
+				 * So tell the kernel to reprobe later.
+				 */
+				tmp_drop_ts_xsfer();
+        			if (ts->xbuf) {
+                			kfree(ts->xbuf);
+                			ts->xbuf = NULL;
+        			}
+        			if (ts) {
+                			kfree(ts);
+                			ts = NULL;
+        			}
+				return -EPROBE_DEFER;
 			}
 		} else {
 			break;
