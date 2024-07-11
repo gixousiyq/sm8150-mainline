@@ -461,33 +461,41 @@
 	status = "okay";
 };
 
+&pm8150l_wled {
+        status = "okay";
+        qcom,string-cfg = <7>;
+        qcom,ovp = <28000>;
+        qcom,fs-current-limit = <22500>;
+        qcom,cabc-sel = <1>;
+};
+
 &mdss_dsi0 {
-	status = "okay";
-	vdda-supply = <&vreg_l3c_1p2>;
+        vdda-supply = <&vreg_l3c_1p2>;
+        status = "okay";
 
-	panel: panel@0 {
-		/* The compatible is assigned in device DTs. */
-		reg = <0>;
+        panel: panel@0 {
+                compatible = "novatek,nt36672c";
+                reg = <0>;
+                vddio-supply = <&vreg_l14a_1p8>;
+                reset-gpios = <&tlmm 6 GPIO_ACTIVE_LOW>;
+                backlight = <&pm8150l_wled>;
+                rotation = <90>;
 
-		status = "okay";
+                ports {
+                        #address-cells = <1>;
+                        #size-cells = <0>;
 
-		reset-gpios = <&tlmm 6 GPIO_ACTIVE_LOW>;
+                        port@0 {
+                                reg = <0>;
 
-		vddio-supply = <&vreg_l14a_1p8>;
-		vcie-supply = <&disp_vci_vreg>;
-		vci-supply = <&vreg_l13a_2p7>;
+                                panel_in: endpoint {
+                                        remote-endpoint = <&mdss_dsi0_out>;
+                                };
+                        };
 
-		panel-te-gpios = <&tlmm 8 GPIO_ACTIVE_LOW>;
-		pinctl-names = "panel_active", "panel_suspend";
-		pinctrl-0 = <&sde_dsi_active &sde_te_active>;
-		pinctrl-1 = <&sde_dsi_suspend &sde_te_suspend>;
 
-		port {
-			panel_in: endpoint {
-				remote-endpoint = <&mdss_dsi0_out>;
-			};
-		};
-	};
+                };
+        };
 };
 
 &mdss_dsi0_out {
