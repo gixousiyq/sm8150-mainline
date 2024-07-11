@@ -494,7 +494,7 @@
                 pinctrl-0 = <&sde_dsi_active &sde_te_active>;
                 pinctrl-1 = <&sde_dsi_suspend &sde_te_suspend>;
 
-                backlight = <&pm8150l_wled>
+                backlight = <&pm8150l_wled>;
 
                 port {
                         panel_in: endpoint {
