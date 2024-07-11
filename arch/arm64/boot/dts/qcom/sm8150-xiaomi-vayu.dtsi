@@ -470,30 +470,36 @@
 };
 
 &mdss_dsi0 {
-        vdda-supply = <&vreg_l3c_1p2>;
         status = "okay";
+        vdda-supply = <&vreg_l3c_1p2>;
 
         panel: panel@0 {
-                compatible = "novatek,nt36672c";
+                /*
+                 * We do not need to decleare touch driver here,
+                 * Xiaomi hardcoded everything in the touch driver
+                 * in a dumb way.
+                 */
                 reg = <0>;
-                vddio-supply = <&vreg_l14a_1p8>;
+
+                status = "okay";
+
                 reset-gpios = <&tlmm 6 GPIO_ACTIVE_LOW>;
-                backlight = <&pm8150l_wled>;
-                rotation = <90>;
 
-                ports {
-                        #address-cells = <1>;
-                        #size-cells = <0>;
+                vddio-supply = <&vreg_l14a_1p8>;
+                vcie-supply = <&disp_vci_vreg>;
+                vci-supply = <&vreg_l13a_2p7>;
 
-                        port@0 {
-                                reg = <0>;
+                panel-te-gpios = <&tlmm 8 GPIO_ACTIVE_LOW>;
+                pinctl-names = "panel_active", "panel_suspend";
+                pinctrl-0 = <&sde_dsi_active &sde_te_active>;
+                pinctrl-1 = <&sde_dsi_suspend &sde_te_suspend>;
 
-                                panel_in: endpoint {
-                                        remote-endpoint = <&mdss_dsi0_out>;
-                                };
+                backlight = <&pm8150l_wled>
+
+                port {
+                        panel_in: endpoint {
+                                remote-endpoint = <&mdss_dsi0_out>;
                         };
-
-
                 };
         };
 };
