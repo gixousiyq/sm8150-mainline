@@ -2300,7 +2300,7 @@ static int32_t nvt_ts_probe(struct platform_device *pdev)
 
 	// This to prevent the driver from messing
 	// With panel initilization
-	usleep_range(2500,3000);
+	usleep_range(10000,10000);
 
 	for (retry = 1; retry <= 3; ++retry) {
 		ret = tmp_hold_ts_xsfer(&ts_xsfer);
