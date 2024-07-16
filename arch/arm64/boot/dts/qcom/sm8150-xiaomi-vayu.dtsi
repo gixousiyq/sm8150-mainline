@@ -138,7 +138,7 @@
 		};
 	};
 
-    // No fuel gauge driver yet so this node is useless
+	    // No fuel gauge driver yet so this node is useless
 	battery: battery {
 		compatible = "simple-battery";
 		charge-full-design-microamp-hours = <5160000>;
@@ -530,6 +530,81 @@
 	monitored-battery = <&battery>;
 };
 
+&pm8150b_charger {
+status ="okay";
+};
+
+&i2c4 {
+	status = "okay";
+	bq25970-standalone@66 {
+                compatible = "ti,bq2597x-standalone";
+                reg = <0x66>;
+                interrupt-parent = <&tlmm>;
+                interrupts = <10 0x2002>;
+                pinctrl-names = "default";
+                pinctrl-0 = <&bq2597x_master_int_default &bq2597x_master_int_suspend>;
+		status="okay";
+
+                /*ti,bq2597x,bat-ovp-disable;*/
+                ti,bq2597x,bat-ovp-alarm-disable;
+                ti,bq2597x,bat-ocp-disable;
+                ti,bq2597x,bat-ocp-alarm-disable;
+                ti,bq2597x,bat-ucp-alarm-disable;
+                ti,bq2597x,bat-ucp-disable;
+
+                ti,bq2597x,bus-ovp-alarm-disable;
+                ti,bq2597x,bus-ocp-disable;
+                ti,bq2597x,bus-ocp-alarm-disable;
+                ti,bq2597x,bat-therm-disable;
+                ti,bq2597x,bus-therm-disable;
+                ti,bq2597x,die-therm-disable;
+
+		ti,bq2597x,bat-ovp-threshold = <4550>;
+		ti,bq2597x,bat-ovp-alarm-threshold = <4525>;
+                //ti,bq2597x,bat-ocp-threshold = <8000>;
+                //ti,bq2597x,bat-ocp-alarm-threshold = <7500>;
+
+		ti,bq2597x,bus-ovp-threshold = <12000>;
+		ti,bq2597x,bus-ovp-alarm-threshold = <11000>;
+		ti,bq2597x,bus-ocp-threshold = <3750>;
+		ti,bq2597x,bus-ocp-alarm-threshold = <3500>;
+
+                //ti,bq2597x,bat-ucp-alarm-threshold = <2000>;
+
+		ti,bq2597x,bat-therm-threshold = <0x15>;/*4.1%*/
+		ti,bq2597x,bus-therm-threshold = <0x15>;/*4.1%*/
+		ti,bq2597x,die-therm-threshold = <145>;
+		ti,bq2597x,ac-ovp-threshold = <14>;
+                //ti,bq2597x,sense-resistor-mohm = <2>;
+
+        };
+
+	ln8000_charger@51 {
+		compatible = "lionsemi,ln8000";
+		reg = <0x51>;
+
+		status = "disabled";
+		usb-tcpm = <&pm8150b_typec>;
+		irq-gpios = <&tlmm 36 0x2002>;
+
+		ln8000_charger,bat-ovp-threshold = <4560>;
+		ln8000_charger,bat-ovp-alarm-threshold = <4525>;
+		ln8000_charger,bus-ovp-threshold = <13000>;
+		ln8000_charger,bus-ovp-alarm-threshold = <11000>;
+		ln8000_charger,bus-ocp-threshold = <3750>;
+		ln8000_charger,bus-ocp-alarm-threshold = <3500>;
+		ln8000_charger,ntc-alarm-cfg  = <226>;
+
+		ln8000_charger,tdie-prot-disable;
+		ln8000_charger,tbus-mon-disable;
+		ln8000_charger,tbat-mon-disable;
+		ln8000_charger,iin-ocp-disable;
+		ln8000_charger,iin-reg-disable;
+		ln8000_charger,tdie-reg-disable;
+		ln8000_charger,vbat-reg-disable;
+	};
+};
+
 &pm8150b_typec {
 	vdd-pdphy-supply = <&vreg_l2a_3p1>;
 	status = "okay";
@@ -539,7 +614,6 @@
 
 		power-role = "dual";
 		data-role = "dual";
-		try-power-role = "sink";
 		self-powered;
 
 		source-pdos = <PDO_FIXED(5000, 3000,
@@ -624,7 +698,39 @@
 
 &tlmm {
 	gpio-reserved-ranges = <0 4>, <126 4>;
+	bq2597x {
+                bq2597x_master_int_default: bq2597x_master_int_default {
+                        /* active state */
+                        mux {
+                                /* GPIO 10 is used for bq25970 master ic interrupt usage */
+                                pins = "gpio10";
+                                function = "gpio";
+                        };
 
+                        config {
+                                pins = "gpio10";
+                                drive-strength = <2>; /* 2 MA */
+                                bias-pull-up;
+                                input-enable;
+                        };
+                };
+
+                bq2597x_master_int_suspend: bq2597x_master_int_suspend {
+                        /* sleep state */
+                        mux {
+                                /* GPIO 10 is used for bq25970 master ic interrupt usage */
+                                pins = "gpio10";
+                                function = "gpio";
+                        };
+
+                        config {
+                                pins = "gpio10";
+                                drive-strength = <2>; /* 2 MA */
+                                bias-pull-up;
+                                input-enable;
+                        };
+                };
+        };
 	ts_int_active: ts_int_active {
 		pins = "gpio122";
 		function = "gpio";
