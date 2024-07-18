@@ -138,7 +138,6 @@
 		};
 	};
 
-    // No fuel gauge driver yet so this node is useless
 	battery: battery {
 		compatible = "simple-battery";
 		charge-full-design-microamp-hours = <5160000>;
@@ -457,6 +456,35 @@
 	};
 };
 
+&i2c7 {
+	clock-frequency = <100000>;
+	status = "okay";
+
+	tas2562: codec@4c { /* SPK */
+		compatible = "ti,tas2562";
+		reg = <0x4c>;
+		#sound-dai-cells = <1>;
+		interrupt-parent = <&tlmm>;
+                interrupts = <90 IRQ_TYPE_NONE>;
+		shutdown-gpios = <&tlmm 89 GPIO_ACTIVE_HIGH>;
+		ti,imon-slot-no = <0>;
+		ti,vmon-slot-no = <2>;
+		sound-name-prefix = "Right";
+	};
+
+	tas2564: codec@4d { /* EAR */
+		compatible = "ti,tas2564";
+		reg = <0x4d>;
+		#sound-dai-cells = <1>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <91 IRQ_TYPE_NONE>;
+		shutdown-gpios = <&tlmm 92 GPIO_ACTIVE_HIGH>;
+		ti,imon-slot-no = <1>;
+		ti,vmon-slot-no = <3>;
+		sound-name-prefix = "Left";
+	};
+};
+
 &mdss {
 	status = "okay";
 };
@@ -524,7 +552,6 @@
 	};
 };
 
-// No driver yet
 &pm8150b_fg {
 	status = "okay";
 	monitored-battery = <&battery>;
