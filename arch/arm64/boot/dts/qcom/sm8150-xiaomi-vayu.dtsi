@@ -636,9 +636,14 @@
 };
 
 &q6afedai {
-	qi2s@20 {
-		reg = <TERTIARY_MI2S_RX>;
-		qcom,sd-lines = <0>;
+	dai@72 {
+		reg = <QUATERNARY_TDM_RX_0>;
+		qcom,tdm-sync-mode = <1>;
+		qcom,tdm-sync-src = <1>;
+		qcom,tdm-data-out = <0>;
+		qcom,tdm-invert-sync = <1>;
+		qcom,tdm-data-delay = <1>;
+		qcom,tdm-data-align = <0>;
 	};
 };
 
