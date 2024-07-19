@@ -635,6 +635,19 @@
 	status = "okay";
 };
 
+&q6afedai {
+	qi2s@20 {
+		reg = <TERTIARY_MI2S_RX>;
+		qcom,sd-lines = <0>;
+	};
+};
+
+&q6asmdai {
+	dai@0 {
+		reg = <0>;
+	};
+};
+
 &remoteproc_adsp {
 	status = "okay";
 	firmware-name = "qcom/sm8150/xiaomi/vayu/adsp.mbn";
@@ -652,6 +665,21 @@
 
 &tlmm {
 	gpio-reserved-ranges = <0 4>, <126 4>;
+
+	quat_tdm_active: quat-tdm-active-state {
+		pins = "gpio137", "gpio138";
+		function = "qua_mi2s";
+		drive-strength = <8>;
+		bias-disable;
+		output-high;
+	};
+
+	quat_tdm_sd1_active: quat-tdm-sd1-active-state {
+		pins = "gpio140";
+		function = "qua_mi2s";
+		drive-strength = <8>;
+		bias-disable;
+	};
 
 	ts_int_active: ts_int_active {
 		pins = "gpio122";
@@ -860,6 +888,40 @@
 		vddrf-supply = <&vreg_l2c_1p3>;
 		vddch0-supply = <&vreg_l11c_3p3>;
 		max-speed = <3200000>;
+	};
+};
+
+&sound {
+	compatible = "qcom,sm8150-sndcard";
+	pinctrl-0 = <&quat_tdm_active
+		&quat_tdm_sd1_active>;
+	pinctrl-names = "default";
+	model = "Xiaomi POCO X3 Pro";
+
+	audio-routing =
+		"MultiMedia1 Playback", "TR SPK",
+		"MultiMedia1 Playback", "TL SPK";
+
+	mm1-dai-link {
+		link-name = "MultiMedia1";
+		cpu {
+			sound-dai = <&q6asmdai MSM_FRONTEND_DAI_MULTIMEDIA1>;
+		};
+	};
+
+	speaker-dai-link {
+		link-name = "Speaker Playback";
+		cpu {
+			sound-dai = <&q6afedai QUATERNARY_TDM_RX_0>;
+		};
+
+		platform {
+			sound-dai = <&q6routing>;
+		};
+
+		codec {
+			sound-dai = <&tas2562 0>, <&tas2564 0>;
+		};
 	};
 };
 
