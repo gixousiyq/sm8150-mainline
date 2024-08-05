@@ -282,8 +282,8 @@ static const struct drm_display_mode j20s_36_02_0a_dsc_mode = {
 	.vsync_start = 2400 + 33,
 	.vsync_end = 2400 + 33 + 2,
 	.vtotal = 2400 + 33 + 2 + 30,
-	.width_mm = 695,
-	.height_mm = 1546,
+	.width_mm = 70,
+	.height_mm = 154,
 };
 
 static int j20s_36_02_0a_dsc_get_modes(struct drm_panel *panel,
